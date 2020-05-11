@@ -1,0 +1,30 @@
+
+{
+    "Table": {
+        "TableName": "coronavores",
+        "KeySchema": [
+            {
+                "AttributeName": "eid",
+                "KeyType": "HASH"
+            }, 
+            {
+                "AttributeName": "id",
+                "KeyType": "RANGE"
+            }
+        ],
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "eid",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "id",
+                "AttributeType": "S"
+            }
+        ],
+        "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+        }
+    }
+}
