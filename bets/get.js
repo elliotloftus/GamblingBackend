@@ -5,13 +5,18 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 exports.getAllBets =  (event, context, callback) =>  {
+    const eventId = event.pathParameters.eventId
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
-        Key: {
-            eid: event.pathParameters.eventId,
+        KeyConditionExpression: "#eventIdName = :eventIdValue",
+        ExpressionAttributeNames: {
+          "#eventIdName":"eid"
         },
+        ExpressionAttributeValues: {
+          ":eventIdValue": eventId
+        }
     };
-    dynamoDb.get(params, (error, result) => {
+    dynamoDb.query(params, (error, result) => {
         if (error) {
           console.error(error);
           callback(null, {
