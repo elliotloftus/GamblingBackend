@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 exports.saveWager = (event, context, callback) => { 
   //TODO validate the event body
-  const timestamp = new Date().getTime().toString();
+  const timestamp = new Date().getTime().toString;
   const data = JSON.parse(event.body)
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -24,12 +24,12 @@ exports.saveWager = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error);
-      const errorResponse = {
+      callback(null, {
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
         body: 'Couldn\'t create the bet item.',
-      };
-      callback(errorResponse)
+      });
+      return;
     }
     const response = {
       statusCode: 200,
