@@ -4,13 +4,15 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 exports.saveWager = (event, context, callback) => { 
   //TODO validate the event body
-  const timestamp = new Date().getTime().toString;
+  console.log("request entered for " + JSON.stringify(event))
+  const timestamp = new Date().getTime()
   const data = JSON.parse(event.body)
+  console.log("data " + JSON.stringify(data))
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
       eid: data.eventId,
-      id: timestamp,
+      id: timestamp.toString(),
       name: data.name,
       amount: data.amount,
       contestant: data.contestant,
@@ -18,7 +20,7 @@ exports.saveWager = (event, context, callback) => {
       winnings: data.winnings
     },
   };
-  console.log("putting params " + params)
+  console.log("putting params " + JSON.stringify(params))
   // write the bet to the database
   dynamoDb.put(params, (error) => {
     // handle potential errors
@@ -33,6 +35,10 @@ exports.saveWager = (event, context, callback) => {
     }
     const response = {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify(params.Item),
     };
     callback(null,response)
