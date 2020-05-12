@@ -2,10 +2,9 @@
 const AWS = require('aws-sdk');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-exports.saveWager = async function(event) {
+exports.saveWager = (event, context, callback) => { 
   //TODO validate the event body
-  console.log(event)
-  const timestamp = new Date().getTime();
+  const timestamp = new Date().getTime().toString();
   const data = JSON.parse(event.body)
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -17,8 +16,9 @@ exports.saveWager = async function(event) {
       contestant: data.contestant,
       betType: data.betType,
       winnings: data.winnings
-    }
-  }
+    },
+  };
+  console.log("putting params " + params)
   // write the bet to the database
   dynamoDb.put(params, (error) => {
     // handle potential errors
@@ -29,14 +29,12 @@ exports.saveWager = async function(event) {
         headers: { 'Content-Type': 'text/plain' },
         body: 'Couldn\'t create the bet item.',
       };
-      return errorResponse
+      callback(errorResponse)
     }
     const response = {
       statusCode: 200,
       body: JSON.stringify(params.Item),
     };
-    return response
-  })
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
+    callback(null,response)
+  });
 };
