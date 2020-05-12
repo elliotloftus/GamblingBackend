@@ -45,7 +45,7 @@ functions:
     handler: bets/get.getAllBets
     events:
       - http:
-          path: bets
+          path: bets/{eventId}
           method: get
           cors: true
 
